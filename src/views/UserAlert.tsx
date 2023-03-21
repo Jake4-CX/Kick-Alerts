@@ -110,7 +110,7 @@ export const UserAlert = (props: any) => {
 
     const toastContent = ( // Build dynamic toast content outside of toast.custom to prevent constant re-rendering
       <>
-        <div className="line-clamp-2 flex font-[500] -my-2 py-1 px-2" style={{textShadow: '1px 1px 10px black, 1px 1px 12px #2C2C2C'}}>
+        <div className="line-clamp-4 flex font-[500] -my-2 py-1 px-2" style={{textShadow: '1px 1px 10px black, 1px 1px 12px #2C2C2C'}}>
           {subscribifier(user)}
           {/* <span className="font-bold">{user.username}</span> */}
           {messageEmojifier(message.message)}
