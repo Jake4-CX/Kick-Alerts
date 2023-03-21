@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+
+@layer components {
+  .bg-theme-gray-slate {
+    @apply bg-cover bg-gradient-to-r from-[#D3D3D3] to-[#eaeaea];
+  }
+}
+
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Roboto', sans-serif;
+  }
+}
