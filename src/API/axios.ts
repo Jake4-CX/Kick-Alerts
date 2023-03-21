@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
 
-axios.defaults.baseURL = "https://kick.com/";
+//axios.defaults.baseURL = "https://kick.com/";
 
 export default axios;
