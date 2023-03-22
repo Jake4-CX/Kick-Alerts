@@ -5,7 +5,6 @@ import * as PusherTypes from 'pusher-js';
 import { useEffect, useState } from "react";
 
 import toast, { useToasterStore } from 'react-hot-toast';
-import { Emotes } from "../API/Services/Emotes";
 import { Streamers } from "../API/Services/Streamers";
 
 import bitSound from '../assets/sounds/notification_bits.ogg';
@@ -30,10 +29,6 @@ export const UserAlert = (props: any) => {
       .forEach((t) => toast.dismiss(t.id)); // Dismiss – Use toast.remove(t.id) for no exit animation
   }, [toasts]);
 
-  const [emotes, setEmotes] = useState<Emote[]>([]);
-
-  const { getStreamerEmotes, getLocalEmotes } = Emotes();
-
   if (username === undefined || user_id === undefined || chatroom_id === undefined) {
     return (
       <>
@@ -48,28 +43,6 @@ export const UserAlert = (props: any) => {
       </>
     )
   }
-
-  useEffect(() => {
-
-    const getEmotes = async () => {
-      try {
-        const response = await getLocalEmotes();
-
-        var emojis: Emote[] = [];
-
-        if (response.status === 200) {
-          emojis = response.data.streamerEmotes.emotes;
-          emojis = emojis.concat(response.data.globalEmotes.emotes);
-          setEmotes(emojis);
-        }
-
-      } catch (error) {
-        console.log("Failed to query local emotes: ", error);
-      }
-    }
-    getEmotes(); // using locally stored emotes - not from kick api
-
-  }, [username]);
 
   useEffect(() => {
     const connectToSocket = async () => {
@@ -101,11 +74,11 @@ export const UserAlert = (props: any) => {
 
     };
 
-    if (user_id !== undefined && chatroom_id !== undefined && emotes.length > 0) {
+    if (user_id !== undefined && chatroom_id !== undefined) {
       connectToSocket();
     }
 
-  }, [emotes]);
+  }, [username]);
 
 
   function onChatMessageSentEvent(data: any) {
@@ -237,16 +210,6 @@ export const UserAlert = (props: any) => {
         console.log(`Found emote with ID ${emoteID} and name "${emoteName}" - Full match: ${fullMatch}`);
 
         message = message.replace(fullMatch, `<img src="https://files.kick.com/emotes/${emoteID}/fullsize" alt="${emoteName}" class="emote" />`);
-
-        // const emote: Emote | undefined = emotes.find(e => e.id === parseInt(emoteID));
-
-        // if (emote !== undefined) {
-        //   message = message.replace(fullMatch, `<img src="https://files.kick.com/emotes/${emote.id}/fullsize" alt="${emote.name}" class="emote" />`);
-        // } else {
-        //   console.log(`Invalid emote - or not in database (${fullMatch})`);
-        //   message = message.replace(fullMatch, ``);
-        // }
-
 
       } else if (type === "emoji") {
         console.log(`Found emoji with value "${value}" - Full match: ${fullMatch}`);
