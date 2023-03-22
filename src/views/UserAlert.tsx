@@ -18,6 +18,41 @@ export const UserAlert = (props: any) => {
   const [subscriptionsQueue, setSubscriptionsQueue] = useState<JSX.Element[]>([]);
   const [currentSubscription, setCurrentSubscription] = useState<JSX.Element | null>();
 
+  useEffect(() => {
+    if (subscriptionsQueue.length > 0 && !currentSubscription) {
+      const nextSubscription = subscriptionsQueue[0];
+      setCurrentSubscription(nextSubscription);
+      setSubscriptionsQueue(subscriptionsQueue.slice(1));
+    }
+  }, [subscriptionsQueue, currentSubscription]);
+
+  useEffect(() => {
+    let timeout: number;
+
+    if (currentSubscription) {
+      alertSound.play();
+      toast.custom((t) => (
+        <>
+          <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white shadow-xl rounded-lg flex px-4 py-2`}>
+            {currentSubscription}
+          </div>
+        </>), {
+        position: 'top-right',
+        duration: 8000,
+      });
+
+      timeout = window.setTimeout(() => {
+        setCurrentSubscription(null);
+      }, 10000);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [currentSubscription]);
+
+  const addSubscription = (subscription: JSX.Element) => {
+    setSubscriptionsQueue((prevSubscriptions) => [...prevSubscriptions, subscription]);
+  };
+
   const alertSound = new Audio(bitSound);
 
   // var [userMessages, setUserMessages] = useState<[User, Message][]>([]);
@@ -248,49 +283,30 @@ export const UserAlert = (props: any) => {
     }
     console.log(`[SUB] Username: ${data.username} (ID: ${data.user_ids[0]}) ChannelID: ${data.channel_id}`);
 
-    alertSound.play();
-
-    const test: JSX.Element = <div><h1>Yooo</h1></div>
-
-    toast.custom((t) => (
-      <>
-        <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white shadow-xl rounded-lg flex px-4 py-2`}>
-          <div className="flex flex-col items-center justify-center w-full">
-            <img src="https://media.tenor.com/qrPKbhgp4XMAAAAd/therealmoisesb-moises.gif" alt="emote" className="w-48 h-full inline" />
-            <div className="">
-              <span className="font-bold">{data.username}</span>
-              <span className="ml-1">has just subscribed!</span>
-            </div>
-          </div>
+    addSubscription(
+      <div className="flex flex-col items-center justify-center w-full">
+        <img src="https://media.tenor.com/qrPKbhgp4XMAAAAd/therealmoisesb-moises.gif" alt="emote" className="w-48 h-full inline" />
+        <div className="">
+          <span className="font-bold">{data.username}</span>
+          <span className="ml-1">has just subscribed!</span>
         </div>
-      </>), {
-      position: 'top-right',
-      duration: 10000,
-    });
+      </div>
+    );
   }
 
   function onLuckyUsersWhoGotGiftSubscriptions(data: LuckyUsersWhoGotGiftSubscription) {
     console.log(data.gifter_username + " has gifted " + data.usernames.length + " subs to " + data.usernames + "!");
 
-    alertSound.play();
-
-    toast.custom((t) => (
-      <>
-        <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white shadow-xl rounded-lg flex px-4 py-2`}>
-          <div className="flex flex-col items-center justify-center w-full">
-            <img src="https://media.tenor.com/n7HuMMNjpHUAAAAd/therealmoisesb-moises-bournigal.gif" alt="emote" className="w-48 h-full inline" />
-            <div className="">
-              <span className="font-bold">{data.gifter_username}</span>
-              <span className="ml-1">has gifted</span>
-              <span className="ml-1 font-bold">{data.usernames.length}</span>
-              <span className="ml-1">subs!</span>
-            </div>
-          </div>
+    addSubscription(
+      <div className="flex flex-col items-center justify-center w-full">
+        <img src="https://media.tenor.com/n7HuMMNjpHUAAAAd/therealmoisesb-moises-bournigal.gif" alt="emote" className="w-48 h-full inline" />
+        <div className="">
+          <span className="font-bold">{data.gifter_username}</span>
+          <span className="ml-1">has gifted</span>
+          <span className="ml-1 font-bold">{data.usernames.length}</span>
+          <span className="ml-1">subs!</span>
         </div>
-      </>), {
-      position: 'top-right',
-      duration: 10000
-    });
+      </div>);
 
   }
 
@@ -325,7 +341,6 @@ export const UserAlert = (props: any) => {
   return (
     <>
       <div className="flex justify-center items-center h-screen w-screen">
-
 
         {/* <button onClick={() => testSubscribe()} className="bg-white text-black font-bold py-2 px-4 rounded">
           onChannelSubscription
