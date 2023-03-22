@@ -23,7 +23,7 @@ function App() {
 
   const { toasts } = useToasterStore();
 
-  const TOAST_LIMIT = 6
+  const TOAST_LIMIT = 12
 
   useEffect(() => {
     toasts
