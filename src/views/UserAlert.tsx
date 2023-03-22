@@ -184,6 +184,10 @@ export const UserAlert = (props: any) => {
       }
     }
 
+    if (user.quantity_gifted > 0) {
+      badges += `<img src="/assets/images/gifted.png" alt="Gifted ${user.quantity_gifted}" class="w-4 h-4 mr-1 inline" />`;
+    }
+
     const textColours = ["text-green-500", "text-blue-500", "text-red-500", "text-yellow-500", "text-purple-500", "text-pink-500"];
     const randomColour = textColours[Math.floor(Math.random() * textColours.length)];
 
