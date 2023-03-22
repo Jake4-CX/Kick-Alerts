@@ -7,8 +7,6 @@ import { PageNotFound } from './views/PageNotFound'
 import { UserAlert } from './views/UserAlert'
 import { Toaster, useToasterStore, toast } from 'react-hot-toast';
 import { Alerts } from './views/Alerts'
-import { ToastContainer } from 'react-toastify'
-
 function App() {
 
   const router = createBrowserRouter(
@@ -36,7 +34,6 @@ function App() {
     <div className="App">
       <RouterProvider router={router} />
       <Toaster />
-      <ToastContainer />
     </div>
   )
 
