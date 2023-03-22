@@ -5,6 +5,12 @@
   .bg-theme-gray-slate {
     @apply bg-cover bg-gradient-to-r from-[#D3D3D3] to-[#eaeaea];
   }
+  .badge {
+    @apply w-5 h-5 mr-1 inline;
+  }
+  .emote {
+    @apply w-5 h-5 mr-1 inline;
+  }
 }
 
 @tailwind utilities;

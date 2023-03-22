@@ -11,6 +11,7 @@ export const Alerts = (props: any) => {
 
   const [streamer, setStreamer] = useState<Streamer>();
   const [username, setUsername] = useState<string>();
+  const [toastLimit, setToastLimit] = useState<number>(12);
 
   const { getStreamer } = Streamers();
 
@@ -68,7 +69,7 @@ export const Alerts = (props: any) => {
                           <span>{streamer.chatroom.id}</span>
                         </div>
                       </div>
-                      <button onClick={() => navigate("/alerts/" + streamer.slug + "/" + + streamer.id + "/" + streamer.chatroom.id)} className="w-full block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200 mt-4">Go to view</button>
+                      <button onClick={() => navigate("/alerts/" + streamer.slug + "/" + + streamer.id + "/" + streamer.chatroom.id + "/" + toastLimit)} className="w-full block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200 mt-4">Go to view</button>
                     </div>
                   </div>
                 </>

@@ -4,7 +4,7 @@ import Pusher from 'pusher-js';
 import * as PusherTypes from 'pusher-js';
 import { useEffect, useState } from "react";
 
-import toast from 'react-hot-toast';
+import toast, { useToasterStore } from 'react-hot-toast';
 import { Emotes } from "../API/Services/Emotes";
 import { Streamers } from "../API/Services/Streamers";
 
@@ -14,12 +14,21 @@ var presenceChannel: PusherTypes.PresenceChannel;
 
 export const UserAlert = (props: any) => {
 
-  const { username, user_id, chatroom_id } = useParams()
+  const { username, user_id, chatroom_id, toast_limit, chat_duration } = useParams()
 
   const alertSound = new Audio(bitSound);
 
   // var [userMessages, setUserMessages] = useState<[User, Message][]>([]);
   // const USER_MESSAGE_CACHE_SIZE = 10;
+
+  const { toasts } = useToasterStore();
+
+  useEffect(() => {
+    toasts
+      .filter((t) => t.visible) // Only consider visible toasts
+      .filter((_, i) => i >= (toast_limit === undefined ? 12 : parseInt(toast_limit))) // Is toast index over limit?
+      .forEach((t) => toast.dismiss(t.id)); // Dismiss – Use toast.remove(t.id) for no exit animation
+  }, [toasts]);
 
   const [emotes, setEmotes] = useState<Emote[]>([]);
 
@@ -110,7 +119,7 @@ export const UserAlert = (props: any) => {
 
     const toastContent = ( // Build dynamic toast content outside of toast.custom to prevent constant re-rendering
       <>
-        <div className="line-clamp-4 flex font-[500] -my-2 py-1 px-2" style={{textShadow: '1px 1px 10px black, 1px 1px 12px #2C2C2C'}}>
+        <div className="line-clamp-4 flex font-[500] -my-2 py-1 px-2 text-[20px]" style={{ textShadow: '1px 1px 10px black, 1px 1px 12px #2C2C2C' }}>
           {subscribifier(user)}
           {/* <span className="font-bold">{user.username}</span> */}
           {messageEmojifier(message.message)}
@@ -120,12 +129,12 @@ export const UserAlert = (props: any) => {
 
     toast.custom((t) =>
       <>
-        <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full flex px-4 py-2`}>
+        <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-3xl w-full flex px-4 py-2`}>
           {toastContent}
         </div>
       </>, {
       position: 'bottom-left',
-      duration: 15000,
+      duration: (chat_duration === undefined ? 15000 : parseInt(chat_duration) * 1000),
       id: "chatmessage." + message.id
     });
 
@@ -136,56 +145,75 @@ export const UserAlert = (props: any) => {
     var badges = "";
 
     if (user.verified) {
-      badges += `<img src="/assets/images/verified.png" alt="Verified" class="w-4 h-4 mr-1 inline" />`;
+      badges += `<img src="/assets/images/verified.png" alt="Verified" class="badge" />`;
     }
 
     if (user.isSuperAdmin) {
-      badges += `<img src="/assets/images/moderator.png" alt="Super Admin" class="w-4 h-4 mr-1 inline" />`;
+      badges += `<img src="/assets/images/moderator.png" alt="Super Admin" class="badge" />`;
     }
 
     if (user.role !== null && user.role.toLowerCase() === "moderator") {
-      badges += `<img src="/assets/images/moderator.png" alt="Moderator" class="w-4 h-4 mr-1 inline" />`;
+      badges += `<img src="/assets/images/moderator.png" alt="Moderator" class="badge" />`;
     }
 
 
     if (user.is_founder) {
-      badges += `<img src="/assets/images/founder.png" alt="Moderator" class="w-4 h-4 mr-1 inline" />`;
+      badges += `<img src="/assets/images/founder.png" alt="Moderator" class="badge" />`;
     }
 
     if (user.is_subscribed) {
-      
+
       switch (true) { // First month = 1 (Even if it's their first day of subscribing)
         case (user.months_subscribed >= 12):
-          badges += `<img src="/assets/images/subscriber_0.png" alt="Subscriber" class="w-4 h-4 mr-1 inline" />`; // 12 month
+          badges += `<img src="/assets/images/subscriber_0.png" alt="Subscriber" class="badge" />`; // 12 month
           break;
         case (user.months_subscribed >= 6):
-          badges += `<img src="/assets/images/subscriber_0.png" alt="Subscriber" class="w-4 h-4 mr-1 inline" />`; // 6 month
+          badges += `<img src="/assets/images/subscriber_0.png" alt="Subscriber" class="badge" />`; // 6 month
           break;
         case (user.months_subscribed >= 3):
-          badges += `<img src="/assets/images/subscriber_0.png" alt="Subscriber" class="w-4 h-4 mr-1 inline" />`; // 3 month
+          badges += `<img src="/assets/images/subscriber_0.png" alt="Subscriber" class="badge" />`; // 3 month
           break;
         case (user.months_subscribed >= 2):
-          badges += `<img src="/assets/images/subscriber_0.png" alt="Subscriber" class="w-4 h-4 mr-1 inline" />`; // 2 month
+          badges += `<img src="/assets/images/subscriber_0.png" alt="Subscriber" class="badge" />`; // 2 month
           break;
         default:
-          badges += `<img src="/assets/images/subscriber_0.png" alt="Subscriber" class="w-4 h-4 mr-1 inline" />`;
+          badges += `<img src="/assets/images/subscriber_0.png" alt="Subscriber" class="badge" />`;
+      }
+    }
+
+    if (user.quantity_gifted > 0) {
+
+      switch (true) {
+        case (user.quantity_gifted >= 100):
+          badges += `<img src="/assets/images/gifted_orange.png" alt="Gifted ${user.quantity_gifted}" class="badge" />`;
+          break;
+        case (user.quantity_gifted >= 50):
+          badges += `<img src="/assets/images/gifted_red.png" alt="Gifted ${user.quantity_gifted}" class="badge" />`;
+          break;
+        case (user.quantity_gifted >= 25):
+          badges += `<img src="/assets/images/gifted_purple.png" alt="Gifted ${user.quantity_gifted}" class="badge" />`;
+          break;
+        case (user.quantity_gifted >= 10):
+          badges += `<img src="/assets/images/gifted_blue.png" alt="Gifted ${user.quantity_gifted}" class="badge" />`;
+          break;
+        case (user.quantity_gifted >= 5):
+          badges += `<img src="/assets/images/gifted_blue.png" alt="Gifted ${user.quantity_gifted}" class="badge" />`;
+          break;
+        default:
+          badges += `<img src="/assets/images/gifted_blue.png" alt="Gifted ${user.quantity_gifted}" class="badge" />`;
       }
     }
 
     if (user.follower_badges.length > 0) {
       if (user.follower_badges.includes("OG")) {
-          badges += `<img src="/assets/images/OG.png" alt="OG" class="w-4 h-4 mr-1 inline" />`;
+        badges += `<img src="/assets/images/OG.png" alt="OG" class="badge" />`;
       }
       if (user.follower_badges.includes("Channel Host")) {
-          badges += `<img src="/assets/images/Broadcaster.png" alt="Broadcaster" class="w-4 h-4 mr-1 inline" />`;
+        badges += `<img src="/assets/images/Broadcaster.png" alt="Broadcaster" class="badge" />`;
       }
       if (user.follower_badges.includes("VIP")) {
-          badges += `<img src="/assets/images/VIP.png" alt="VIP" class="w-4 h-4 mr-1 inline" />`;
+        badges += `<img src="/assets/images/VIP.png" alt="VIP" class="badge" />`;
       }
-    }
-
-    if (user.quantity_gifted > 0) {
-      badges += `<img src="/assets/images/gifted.png" alt="Gifted ${user.quantity_gifted}" class="w-4 h-4 mr-1 inline" />`;
     }
 
     const textColours = ["text-green-500", "text-blue-500", "text-red-500", "text-yellow-500", "text-purple-500", "text-pink-500"];
@@ -208,12 +236,12 @@ export const UserAlert = (props: any) => {
         const [emoteID, emoteName] = value.split(':');
         console.log(`Found emote with ID ${emoteID} and name "${emoteName}" - Full match: ${fullMatch}`);
 
-        message = message.replace(fullMatch, `<img src="https://files.kick.com/emotes/${emoteID}/fullsize" alt="${emoteName}" class="w-4 h-4 mr-1 inline" />`);
+        message = message.replace(fullMatch, `<img src="https://files.kick.com/emotes/${emoteID}/fullsize" alt="${emoteName}" class="emote" />`);
 
         // const emote: Emote | undefined = emotes.find(e => e.id === parseInt(emoteID));
 
         // if (emote !== undefined) {
-        //   message = message.replace(fullMatch, `<img src="https://files.kick.com/emotes/${emote.id}/fullsize" alt="${emote.name}" class="w-4 h-4 mr-1 inline" />`);
+        //   message = message.replace(fullMatch, `<img src="https://files.kick.com/emotes/${emote.id}/fullsize" alt="${emote.name}" class="emote" />`);
         // } else {
         //   console.log(`Invalid emote - or not in database (${fullMatch})`);
         //   message = message.replace(fullMatch, ``);
@@ -223,7 +251,7 @@ export const UserAlert = (props: any) => {
       } else if (type === "emoji") {
         console.log(`Found emoji with value "${value}" - Full match: ${fullMatch}`);
 
-        message = message.replace(fullMatch, `<img src="https://dbxmjjzl5pc1g.cloudfront.net/877d1966-06a7-4737-beca-d4bcfeb85820/images/emojis/${value}.png" alt="${value}" class="w-4 h-4 mr-1 inline" />`);
+        message = message.replace(fullMatch, `<img src="https://dbxmjjzl5pc1g.cloudfront.net/877d1966-06a7-4737-beca-d4bcfeb85820/images/emojis/${value}.png" alt="${value}" class="emote" />`);
       }
     }
 
@@ -311,7 +339,7 @@ export const UserAlert = (props: any) => {
 
   return (
     <>
-      <div className="flex justify-center items-center h-screen w-screen bg-green-600">
+      <div className="flex justify-center items-center h-screen w-screen">
 
 
         {/* <button onClick={() => testSubscribe()} className="bg-white text-black font-bold py-2 px-4 rounded">

@@ -15,12 +15,13 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.0",
-    "react-router-dom": "^6.9.0"
+    "react-router-dom": "^6.9.0",
+    "vite-plugin-mkcert": "^1.13.3"
   },
   "devDependencies": {
-    "@vitejs/plugin-basic-ssl": "^1.0.1",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
+    "@vitejs/plugin-basic-ssl": "^1.0.1",
     "@vitejs/plugin-react-swc": "^3.0.0",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.21",
