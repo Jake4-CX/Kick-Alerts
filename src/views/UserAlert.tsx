@@ -176,7 +176,7 @@ export const UserAlert = (props: any) => {
       badges += `<img src="/assets/images/OG.png" alt="OG" class="w-4 h-4 mr-1 inline" />`;
     }
 
-    const textColours = ["text-green-500", "text-blue-500", "text-red-500", "text-yellow-500", "text-purple-500", "text-pink-500", "text-gray-500"];
+    const textColours = ["text-green-500", "text-blue-500", "text-red-500", "text-yellow-500", "text-purple-500", "text-pink-500"];
     const randomColour = textColours[Math.floor(Math.random() * textColours.length)];
 
     const userName = `<span class='${randomColour}'>${user.username}</span>`
