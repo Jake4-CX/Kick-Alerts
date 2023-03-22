@@ -30,6 +30,7 @@ type Message = {
 
 type ChannelSubscription = {
   user_ids: number[],
+  username: string,
   channel_id: number
 }
 

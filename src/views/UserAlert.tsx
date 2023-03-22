@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom"
 
 import Pusher from 'pusher-js';
 import * as PusherTypes from 'pusher-js';
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import toast, { useToasterStore } from 'react-hot-toast';
 import { Streamers } from "../API/Services/Streamers";
@@ -14,6 +14,9 @@ var presenceChannel: PusherTypes.PresenceChannel;
 export const UserAlert = (props: any) => {
 
   const { username, user_id, chatroom_id, toast_limit, chat_duration } = useParams()
+
+  const [subscriptionsQueue, setSubscriptionsQueue] = useState<JSX.Element[]>([]);
+  const [currentSubscription, setCurrentSubscription] = useState<JSX.Element | null>();
 
   const alertSound = new Audio(bitSound);
 
@@ -236,17 +239,28 @@ export const UserAlert = (props: any) => {
   }
 
   function onChannelSubscription(data: ChannelSubscription) {
-    const gift_size = data.user_ids.length;
-    console.log("Gifted " + gift_size + " subs to " + data.user_ids + "!")
+
+    // username: "" if this is a gift
+
+    if (data.username === undefined || data.username === "" || data.user_ids.length > 1) {
+      console.log("[GIFT] User ID(s): " + data.user_ids + " ChannelID: " + data.channel_id);
+      return;
+    }
+    console.log(`[SUB] Username: ${data.username} (ID: ${data.user_ids[0]}) ChannelID: ${data.channel_id}`);
 
     alertSound.play();
+
+    const test: JSX.Element = <div><h1>Yooo</h1></div>
 
     toast.custom((t) => (
       <>
         <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white shadow-xl rounded-lg flex px-4 py-2`}>
           <div className="flex flex-col items-center justify-center w-full">
-            <img src="https://media.tenor.com/n7HuMMNjpHUAAAAd/therealmoisesb-moises-bournigal.gif" alt="emote" className="w-48 h-full inline" />
-            <span className="font-bold">Gifted {gift_size} subs!</span>
+            <img src="https://media.tenor.com/qrPKbhgp4XMAAAAd/therealmoisesb-moises.gif" alt="emote" className="w-48 h-full inline" />
+            <div className="">
+              <span className="font-bold">{data.username}</span>
+              <span className="ml-1">has just subscribed!</span>
+            </div>
           </div>
         </div>
       </>), {
@@ -258,12 +272,19 @@ export const UserAlert = (props: any) => {
   function onLuckyUsersWhoGotGiftSubscriptions(data: LuckyUsersWhoGotGiftSubscription) {
     console.log(data.gifter_username + " has gifted " + data.usernames.length + " subs to " + data.usernames + "!");
 
+    alertSound.play();
+
     toast.custom((t) => (
       <>
         <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white shadow-xl rounded-lg flex px-4 py-2`}>
           <div className="flex flex-col items-center justify-center w-full">
             <img src="https://media.tenor.com/n7HuMMNjpHUAAAAd/therealmoisesb-moises-bournigal.gif" alt="emote" className="w-48 h-full inline" />
-            <span className="font-bold">{data.gifter_username} Gifted {data.usernames.length}x subs!</span>
+            <div className="">
+              <span className="font-bold">{data.gifter_username}</span>
+              <span className="ml-1">has gifted</span>
+              <span className="ml-1 font-bold">{data.usernames.length}</span>
+              <span className="ml-1">subs!</span>
+            </div>
           </div>
         </div>
       </>), {
@@ -286,7 +307,8 @@ export const UserAlert = (props: any) => {
 
   function testSubscribe() {
     onChannelSubscription({
-      user_ids: [1, 2, 3],
+      user_ids: [1],
+      username: "Jake4",
       channel_id: parseInt(user_id as string),
     } as ChannelSubscription);
   }
@@ -305,12 +327,12 @@ export const UserAlert = (props: any) => {
       <div className="flex justify-center items-center h-screen w-screen">
 
 
-        {/* <button onClick={() => testSubscribe()} className="bg-white text-black font-bold py-2 px-4 rounded">
+        <button onClick={() => testSubscribe()} className="bg-white text-black font-bold py-2 px-4 rounded">
           onChannelSubscription
         </button>
         <button onClick={() => testLuckyUsers()} className="bg-white text-black font-bold py-2 px-4 rounded">
           onLuckyUsersWhoGotGiftSubscriptions
-        </button> */}
+        </button>
       </div>
     </>
   )
