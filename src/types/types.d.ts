@@ -95,7 +95,7 @@ type Streamer = {
   subscriber_badges: [SubscriberBadges],
   subscription?: null,
   subscription_enabled: boolean,
-  user: object,
+  user: UserChannel,
   user_id: number,
   verified?: {
     channel_id: number,
@@ -104,6 +104,24 @@ type Streamer = {
     updated_at: string,
   },
   vod_enabled: boolean
+}
+
+type UserChannel = {
+  id: number,
+  username: string,
+  agreed_to_terms: boolean,
+  bio: string,
+  country: string,
+  state: string,
+  city: string,
+  instagram?: string,
+  twitter?: string,
+  youtube?: string,
+  discord?: string,
+  tiktok?: string,
+  facebook?: string,
+  birthdate: Date,
+  profile_pic: string,
 }
 
 type SubscriberBadges = {

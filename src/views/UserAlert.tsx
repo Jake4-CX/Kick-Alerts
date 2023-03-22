@@ -173,12 +173,13 @@ export const UserAlert = (props: any) => {
     }
 
     if (user.follower_badges.length > 0) {
-      switch (true) {
-        case (user.follower_badges.includes("OG")):
+      if (user.follower_badges.includes("OG")) {
           badges += `<img src="/assets/images/OG.png" alt="OG" class="w-4 h-4 mr-1 inline" />`;
-        case (user.follower_badges.includes("Channel Host")):
+      }
+      if (user.follower_badges.includes("Channel Host")) {
           badges += `<img src="/assets/images/Broadcaster.png" alt="Broadcaster" class="w-4 h-4 mr-1 inline" />`;
-        case (user.follower_badges.includes("VIP")):
+      }
+      if (user.follower_badges.includes("VIP")) {
           badges += `<img src="/assets/images/VIP.png" alt="VIP" class="w-4 h-4 mr-1 inline" />`;
       }
     }
@@ -203,14 +204,16 @@ export const UserAlert = (props: any) => {
         const [emoteID, emoteName] = value.split(':');
         console.log(`Found emote with ID ${emoteID} and name "${emoteName}" - Full match: ${fullMatch}`);
 
-        const emote: Emote | undefined = emotes.find(e => e.id === parseInt(emoteID));
+        message = message.replace(fullMatch, `<img src="https://files.kick.com/emotes/${emoteID}/fullsize" alt="${emoteName}" class="w-4 h-4 mr-1 inline" />`);
 
-        if (emote !== undefined) {
-          message = message.replace(fullMatch, `<img src="https://files.kick.com/emotes/${emote.id}/fullsize" alt="${emote.name}" class="w-4 h-4 mr-1 inline" />`);
-        } else {
-          console.log(`Invalid emote - or not in database (${fullMatch})`);
-          message = message.replace(fullMatch, ``);
-        }
+        // const emote: Emote | undefined = emotes.find(e => e.id === parseInt(emoteID));
+
+        // if (emote !== undefined) {
+        //   message = message.replace(fullMatch, `<img src="https://files.kick.com/emotes/${emote.id}/fullsize" alt="${emote.name}" class="w-4 h-4 mr-1 inline" />`);
+        // } else {
+        //   console.log(`Invalid emote - or not in database (${fullMatch})`);
+        //   message = message.replace(fullMatch, ``);
+        // }
 
 
       } else if (type === "emoji") {

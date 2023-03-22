@@ -54,6 +54,7 @@ export const Alerts = (props: any) => {
                   <div className="flex my-4 bg-slate-100 rounded-lg py-2 px-4">
                     <div className="flex flex-col justify-center items-center w-full">
                       <h2 className="text-2xl font-bold">Success</h2>
+                      <img src={streamer.user.profile_pic} alt="Streamer profile" className="w-24 h-24 rounded-full p-1" />
                       <p className="text-gray-500">Streamer found.</p>
 
                       <div className="flex flex-row">
