@@ -327,12 +327,12 @@ export const UserAlert = (props: any) => {
       <div className="flex justify-center items-center h-screen w-screen">
 
 
-        <button onClick={() => testSubscribe()} className="bg-white text-black font-bold py-2 px-4 rounded">
+        {/* <button onClick={() => testSubscribe()} className="bg-white text-black font-bold py-2 px-4 rounded">
           onChannelSubscription
         </button>
         <button onClick={() => testLuckyUsers()} className="bg-white text-black font-bold py-2 px-4 rounded">
           onLuckyUsersWhoGotGiftSubscriptions
-        </button>
+        </button> */}
       </div>
     </>
   )
