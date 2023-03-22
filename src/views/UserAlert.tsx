@@ -172,8 +172,15 @@ export const UserAlert = (props: any) => {
       }
     }
 
-    if (user.follower_badges.includes("OG")) {
-      badges += `<img src="/assets/images/OG.png" alt="OG" class="w-4 h-4 mr-1 inline" />`;
+    if (user.follower_badges.length > 0) {
+      switch (true) {
+        case (user.follower_badges.includes("OG")):
+          badges += `<img src="/assets/images/OG.png" alt="OG" class="w-4 h-4 mr-1 inline" />`;
+        case (user.follower_badges.includes("Channel Host")):
+          badges += `<img src="/assets/images/Broadcaster.png" alt="Broadcaster" class="w-4 h-4 mr-1 inline" />`;
+        case (user.follower_badges.includes("VIP")):
+          badges += `<img src="/assets/images/VIP.png" alt="VIP" class="w-4 h-4 mr-1 inline" />`;
+      }
     }
 
     const textColours = ["text-green-500", "text-blue-500", "text-red-500", "text-yellow-500", "text-purple-500", "text-pink-500"];
