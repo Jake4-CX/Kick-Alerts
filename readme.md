@@ -1,3 +1,20 @@
+# Need Alerts for Kick?
+
+Use https://kickable.net for all types of alerts and overlays (bot coming soon)
+
+## Alerts
+
+- Subscriber
+- Gifted Sub
+- Follower (Coming soon)
+
+## Overlays
+
+- Chat Overlay
+- Subathon Overlay
+- View Count Overlay
+- Follow Count Overlay
+
 # Kick Alerts
 
 This is a basic kick alert web app made using React (TypeScript). Currently there's greenscreen chat alert and **untested** gift & subscription notifications. Due to how Kick restricts their API access (CORS and strict cloudflare policy), this application is very scuffed and was developed within a few hours. Feel free to improve this application though PRs and if you discover a bug open an issue. I wouldn't recommend using this in production when better working alternatives are released.
